@@ -83,9 +83,16 @@ function parse(data) {
     {
         const contentLength = message.getHeader('content-length');
         message.body = data.substr(bodyStart, contentLength);
-        if(contentLength){
-            message.parseSDP();
+        // 如果包含content-type属性
+        if(message.hasHeader('content-type')) {
+            // 得到content-type属性
+            const contentType = message.getHeader('content-type');
+            // 如果携带的body为sdp消息 and content的长度不为0，则解析
+            if(contentType === 'application/sdp' && contentLength) {
+                message.parseSDP();
+            }
         }
+
     }
     else
     {
